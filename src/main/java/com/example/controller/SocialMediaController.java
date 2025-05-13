@@ -67,5 +67,18 @@ public class SocialMediaController {
     }
 
 
-    
+    @GetMapping("/messages/{messageId}")
+    public ResponseEntity<Message> getMessageById(@PathVariable Integer messageId) {
+        Message message = messageService.getMessageById(messageId);
+        
+        if (message == null) {
+            return ResponseEntity.ok().body(null);  // Return 404 if no message found
+        }
+        return ResponseEntity.ok(message);  // Return 200 with the message
+    }
+
+
+
+
+
 }
