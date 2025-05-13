@@ -5,6 +5,8 @@ import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +50,6 @@ public class SocialMediaController {
     }
 
 
-
     // Create New Message Endpoint
     @PostMapping("/messages")
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
@@ -60,5 +61,11 @@ public class SocialMediaController {
         }
     }
 
+    @GetMapping("/messages")
+    public List<Message> getAllMessages() {
+        return messageService.getAllMessages();
+    }
 
+
+    
 }
