@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.entity.Account;
+import com.example.exception.UnauthorizedException;
 import com.example.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,11 @@ public class AccountService {
         }
 
         return accountRepository.save(account);
+    }
+
+
+    public Account login(String username, String password) {
+        return accountRepository.findByUsernameAndPassword(username, password)
+            .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
     }
 }

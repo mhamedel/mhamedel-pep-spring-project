@@ -35,4 +35,9 @@ public class SocialMediaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PostMapping("/login")
+    public Account login(@RequestBody Account account) {
+        return accountService.login(account.getUsername(), account.getPassword());
+    }
 }
