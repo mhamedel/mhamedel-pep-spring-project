@@ -6,6 +6,7 @@ import com.example.service.AccountService;
 import com.example.service.MessageService;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,12 +82,30 @@ public class SocialMediaController {
 
     @DeleteMapping("/messages/{messageId}")
     public ResponseEntity<String> deleteMessage(@PathVariable Integer messageId) {
-        
+
         int deletedRows = messageService.deleteMessageById(messageId);
         if (deletedRows == 1) {
             return ResponseEntity.ok("1");  // Message deleted, return 1 to indicate successful deletion
         }
         return ResponseEntity.ok("");  // No message found, return an empty body
+    }
+
+
+
+    @PatchMapping("/messages/{messageId}")
+    public ResponseEntity<String> updateMessage(
+            @PathVariable Integer messageId,
+            @RequestBody Map<String, String> requestBody) {
+
+        String newText = requestBody.get("messageText"); // camelCase to match test
+
+        int updatedRows = messageService.updateMessageTextById(messageId, newText);
+
+        if (updatedRows == 1) {
+            return ResponseEntity.ok("1");
+        } else {
+            return ResponseEntity.badRequest().body("");
+        }
     }
 
 }

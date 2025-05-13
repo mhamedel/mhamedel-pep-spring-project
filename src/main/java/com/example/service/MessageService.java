@@ -55,4 +55,18 @@ public class MessageService {
     public int deleteMessageById(Integer messageId) {
         return   messageRepository.deleteMessageById(messageId);;
     }
+
+    @Transactional
+public int updateMessageTextById(Integer messageId, String newText) {
+    if (newText == null || newText.isBlank() || newText.length() > 255) {
+        return 0; // Fail due to invalid message_text
+    }
+    // Check if message exists
+    Message message = messageRepository.findById(messageId).orElse(null);
+    if (message == null) {
+        return 0; // Fail due to nonexistent message
+    }
+    return messageRepository.updateMessageText(messageId, newText);
+}
+
 }
