@@ -1,7 +1,10 @@
 package com.example.controller;
 
 import com.example.entity.Account;
+import com.example.entity.Message;
 import com.example.service.AccountService;
+import com.example.service.MessageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,9 @@ public class SocialMediaController {
 
     @Autowired
     private AccountService accountService;
+    
+    @Autowired
+    private MessageService messageService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(@RequestBody Account account) {
@@ -40,4 +46,19 @@ public class SocialMediaController {
     public Account login(@RequestBody Account account) {
         return accountService.login(account.getUsername(), account.getPassword());
     }
+
+
+
+    // Create New Message Endpoint
+    @PostMapping("/messages")
+    public ResponseEntity<Message> createMessage(@RequestBody Message message) {
+        try {
+            Message createdMessage = messageService.createMessage(message);
+            return new ResponseEntity<>(createdMessage, HttpStatus.OK);  // 200 OK if successful
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // 400 if validation fails
+        }
+    }
+
+
 }
