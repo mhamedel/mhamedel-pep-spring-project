@@ -7,6 +7,8 @@ import com.example.repository.MessageRepository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,4 +51,8 @@ public class MessageService {
         return messageRepository.findById(messageId).orElse(null);  // Return null if no message found
     }
     
+    @Transactional
+    public int deleteMessageById(Integer messageId) {
+        return   messageRepository.deleteMessageById(messageId);;
+    }
 }
