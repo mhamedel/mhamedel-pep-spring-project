@@ -32,13 +32,9 @@ public class MessageService {
         if (account == null) {
             throw new IllegalArgumentException("Posted by user does not exist.");
         }
-
-        // Set the time posted (epoch time)
         if (message.getTimePostedEpoch() == null) {
-            message.setTimePostedEpoch(System.currentTimeMillis() / 1000);  // current epoch time in seconds
+            message.setTimePostedEpoch(System.currentTimeMillis() / 1000);  
         }
-
-        // Save the message to the database
         return messageRepository.save(message);
     }
 
@@ -53,20 +49,23 @@ public class MessageService {
     
     @Transactional
     public int deleteMessageById(Integer messageId) {
-        return   messageRepository.deleteMessageById(messageId);;
+        return   messageRepository.deleteMessageById(messageId);
     }
 
     @Transactional
-public int updateMessageTextById(Integer messageId, String newText) {
-    if (newText == null || newText.isBlank() || newText.length() > 255) {
-        return 0; // Fail due to invalid message_text
+    public int updateMessageTextById(Integer messageId, String newText) {
+        if (newText == null || newText.isBlank() || newText.length() > 255) {
+            return 0; 
+        }
+        Message message = messageRepository.findById(messageId).orElse(null);
+        if (message == null) {
+            return 0; 
+        }
+        return messageRepository.updateMessageText(messageId, newText);
     }
-    // Check if message exists
-    Message message = messageRepository.findById(messageId).orElse(null);
-    if (message == null) {
-        return 0; // Fail due to nonexistent message
-    }
-    return messageRepository.updateMessageText(messageId, newText);
-}
 
+    public List<Message> getMessagesByAccountId(Integer accountId) {
+        return messageRepository.findByPostedBy(accountId);  // Fetch messages posted by the user
+    }
+    
 }
