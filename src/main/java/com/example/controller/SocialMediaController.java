@@ -30,6 +30,11 @@ public class SocialMediaController {
     @Autowired
     private MessageService messageService;
 
+    // Handles user registration requests by accepting an Account object,
+    // tries to register it via the AccountService, and returns appropriate HTTP responses.
+    // Returns 200 OK with the saved account if successful,
+    // 400 BAD REQUEST if input is invalid,
+    // or 409 CONFLICT if username already exists.
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(@RequestBody Account account) {
         try {
@@ -45,13 +50,17 @@ public class SocialMediaController {
         }
     }
 
+    // Handles user login requests by accepting Account credentials (username and password),
+    // delegates authentication to AccountService, and returns the Account if successful.
     @PostMapping("/login")
     public Account login(@RequestBody Account account) {
         return accountService.login(account.getUsername(), account.getPassword());
     }
 
 
-    // Create New Message Endpoint
+    /// Creates a new message from the provided Message object,
+    // calls MessageService to persist it, and returns 200 OK with the created message.
+    // Returns 400 BAD REQUEST if message validation fails.
     @PostMapping("/messages")
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
         try {
@@ -61,17 +70,18 @@ public class SocialMediaController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // 400 if validation fails
         }
     }
-
+    // Retrieves and returns a list of all messages.
     @GetMapping("/messages")
     public List<Message> getAllMessages() {
         return messageService.getAllMessages();
     }
 
-
+    // Retrieves a message by its ID.
+    // Returns 200 OK with the message if found,
+    // or 200 OK with null body if no message matches the ID (could be improved to 404).
     @GetMapping("/messages/{messageId}")
     public ResponseEntity<Message> getMessageById(@PathVariable Integer messageId) {
         Message message = messageService.getMessageById(messageId);
-        
         if (message == null) {
             return ResponseEntity.ok().body(null);  // Return 404 if no message found
         }
@@ -79,10 +89,11 @@ public class SocialMediaController {
     }
 
 
-
+    // Deletes a message identified by its ID.
+    // Returns 200 OK with "1" if deletion was successful,
+    // or 200 OK with an empty body if no message was found to delete.
     @DeleteMapping("/messages/{messageId}")
     public ResponseEntity<String> deleteMessage(@PathVariable Integer messageId) {
-
         int deletedRows = messageService.deleteMessageById(messageId);
         if (deletedRows == 1) {
             return ResponseEntity.ok("1");  // Message deleted, return 1 to indicate successful deletion
@@ -91,16 +102,15 @@ public class SocialMediaController {
     }
 
 
-
+    // Updates the text of a message identified by its ID using the provided new text in request body.
+    // Returns 200 OK with "1" if update was successful,
+    // or 400 BAD REQUEST with empty body if update failed.
     @PatchMapping("/messages/{messageId}")
     public ResponseEntity<String> updateMessage(
             @PathVariable Integer messageId,
             @RequestBody Map<String, String> requestBody) {
-
-        String newText = requestBody.get("messageText"); // camelCase to match test
-
+        String newText = requestBody.get("messageText"); 
         int updatedRows = messageService.updateMessageTextById(messageId, newText);
-
         if (updatedRows == 1) {
             return ResponseEntity.ok("1");
         } else {
@@ -108,10 +118,12 @@ public class SocialMediaController {
         }
     }
 
+    // Retrieves all messages created by a specific account identified by accountId.
+    // Returns 200 OK with the list of messages.
     @GetMapping("/accounts/{accountId}/messages")
     public ResponseEntity<List<Message>> getMessagesByAccountId(@PathVariable Integer accountId) {
         List<Message> messages = messageService.getMessagesByAccountId(accountId);
-        return ResponseEntity.ok(messages);  // Return 200 with the list of messages
+        return ResponseEntity.ok(messages); 
     }
 
 
